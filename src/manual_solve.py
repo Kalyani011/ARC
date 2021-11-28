@@ -283,7 +283,7 @@ def main():
     # like solve_abcd1234(), and run them.
 
     # regex to match solve_* functions and extract task IDs
-    p = r"solve_([a-f0-9]{8})" 
+    p = r"solve_([a-f0-9]{8})"
     tasks_solvers = []
     # globals() gives a dict containing all global names (variables
     # and functions), as name: value pairs.
@@ -349,3 +349,14 @@ def show_result(x, y, yhat):
 
 
 if __name__ == "__main__": main()
+
+
+## Acknowledgements:
+# Following resources were used to perform given tasks:
+# 1. https://numpy.org/doc/stable/reference/generated/numpy.argwhere.html accessed on 26/11/21, 13:15
+# 2. https://numpy.org/doc/stable/reference/generated/numpy.zeros.html accessed on 26/11/21, 21:39
+# 3. https://numpy.org/doc/stable/reference/generated/numpy.ndarray.astype.html accessed on 26/11/21, 21:45
+# 4. https://numpy.org/doc/stable/reference/arrays.nditer.html accessed on 26/11/21, 21:58
+# 5. https://stackoverflow.com/questions/3525953/check-if-all-values-of-iterable-are-zero accessed on 26/11/21, 22:30
+# 6. https://numpy.org/doc/stable/reference/generated/numpy.copy.html accessed on 27/11/21, 15:35
+# 7. https://numpy.org/doc/stable/reference/generated/numpy.flipud.html accessed on 28/11/21, 10:35
