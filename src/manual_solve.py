@@ -16,7 +16,7 @@ import json
 import numpy as np
 import re
 
-
+# Utility functions
 def get_consecutive_num(arr):
     """
     Method to get indices of second number in a pair of consecutive numbers
@@ -38,6 +38,59 @@ def rm_elements(arr, remove_rows):
         arr = arr[arr != element]
     return arr
 
+def above_index(x):
+    """
+    This function is used in the solve_d06dbe63 function to fetch the pattern traced in cells above the cyan cell
+    """
+    shape = x.shape # storing the shape of the input grid
+    boundary = shape[0] # storing the boundary
+    
+    # finding the position of the cyan(8) cell
+    index = np.argwhere(x==8)
+    
+    # using the indices to iterate throught the cells above it
+    for i,j in index:
+        while (i >= 0) and (j < boundary): # to stop when the row is at 0 or the column has reached the end
+            m = i-1 # setting the value to the row above the cell
+            n = j   # keelping the column same
+            while (m > i-3) and (m >= 0) and (n < boundary): # two steps above
+                x[m][n] = 5 # filling it with grey (5)
+                m = m-1
+            r = i-2 # keeping the row same
+            s = j+1 # setting the value to the column next to the cell
+            while (s < j+3) and (s < boundary) and (r >= 0): # two steps right
+                x[r][s] = 5 # filling it with grey (5)
+                s = s+1
+            j = j + 2
+            i = i-2
+    return x  
+
+def below_index(x):
+    """
+    This function is used in the solve_d06dbe63 function to fetch the pattern traced in cells below the cyan cell
+    """
+    shape = x.shape # storing the shape of the input grid
+    boundary = shape[0] # storing the boundary
+    
+    # finding the position of the cyan(8) cell
+    index = np.argwhere(x==8)
+    
+    # using the indices to iterate throught the cells above it
+    for i,j in index: # to stop when the column is at 0 or the row has reached the end
+        while (j >= 0) and (i < boundary):
+            m = i+1 # setting the value to the row below the cell
+            n = j # keelping the column same
+            while (m < i+3) and (n >= 0) and (m < boundary): # two steps below
+                x[m][n] = 5 # filling it with grey (5)
+                m = m+1
+            r = i+2 # keeping the row same
+            s = j-1 # setting the value to the column next to the cell
+            while (s > j-3) and (r < boundary) and (s >= 0): # two steps left
+                x[r][s] = 5 # filling it with grey (5)
+                s = s-1
+            j = j - 2
+            i = i+2
+    return x        
 
 def solve_90f3ed37(x):
     """
@@ -313,53 +366,6 @@ def solve_94f9d214(x):
         x[index[0], index[1]] = red
     return x
 
-def above_index(x):
-    shape = x.shape # storing the shape of the input grid
-    boundary = shape[0] # storing the boundary
-    
-    # finding the position of the cyan(8) cell
-    index = np.argwhere(x==8)
-    
-    # using the indices to iterate throught the cells above it
-    for i,j in index:
-        while (i >= 0) and (j < boundary): # to stop when the row is at 0 or the column has reached the end
-            m = i-1 # setting the value to the row above the cell
-            n = j   # keelping the column same
-            while (m > i-3) and (m >= 0) and (n < boundary): # two steps above
-                x[m][n] = 5 # filling it with grey (5)
-                m = m-1
-            r = i-2 # keeping the row same
-            s = j+1 # setting the value to the column next to the cell
-            while (s < j+3) and (s < boundary) and (r >= 0): # two steps right
-                x[r][s] = 5 # filling it with grey (5)
-                s = s+1
-            j = j + 2
-            i = i-2
-    return x  
-
-def below_index(x):
-    shape = x.shape # storing the shape of the input grid
-    boundary = shape[0] # storing the boundary
-    
-    # finding the position of the cyan(8) cell
-    index = np.argwhere(x==8)
-    
-    # using the indices to iterate throught the cells above it
-    for i,j in index: # to stop when the column is at 0 or the row has reached the end
-        while (j >= 0) and (i < boundary):
-            m = i+1 # setting the value to the row below the cell
-            n = j # keelping the column same
-            while (m < i+3) and (n >= 0) and (m < boundary): # two steps below
-                x[m][n] = 5 # filling it with grey (5)
-                m = m+1
-            r = i+2 # keeping the row same
-            s = j-1 # setting the value to the column next to the cell
-            while (s > j-3) and (r < boundary) and (s >= 0): # two steps left
-                x[r][s] = 5 # filling it with grey (5)
-                s = s-1
-            j = j - 2
-            i = i+2
-    return x        
 
 def solve_d06dbe63(x):
     """
@@ -373,7 +379,7 @@ def solve_d06dbe63(x):
     # Difficulty level: Medium
     # RESULT: This method solves all 3 train (2) and test (1) grids successfully
     """
-    # splitting the functions into two-parts
+    # splitting the function into two-parts
     # the above_index function code returns the input grid with the pattern traced in cells above the cyan cell
     x = above_index(x)
     
@@ -487,6 +493,16 @@ def show_result(x, y, yhat):
 
 if __name__ == "__main__": main()
 
+## Summary:
+###    Commonalities:
+#           1. Python slicing was used in almost all the hand-coded solutions
+#           2. The NumPy library was used in all the 7 functions
+#               2.1 The most common API of numpy used was numpy.argwhere and numpy.where to find the indices of a particular cell/pattern 
+#               2.2 The other common API of numpy used was numpy.shape to fetch the shape of the input grid to define boundaries or the shape of #                   the sub-matrices
+###     Differences:
+#           1. The numpy.delete and numpy.concatenate were used only in the function solve_90f3ed37 mainly to match the given incomplete sub-grid #              with the identified pattern
+#           2. The numpy.flip,numpy.flipud,numpy.fliplr were used only in the function solve_7df24a62 to fetch all possible combinations of the     #              pattern identified
+#           3. The numpy.logical_or was used in the function solve_94f9d214 to perform the logical OR operation on two sub-grids to identify the #              cells which had to be colored
 
 ## Acknowledgements:
 # Following resources were used to perform given tasks:
