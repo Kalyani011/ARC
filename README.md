@@ -58,6 +58,14 @@ fill the cells above the cyan cell with color grey (5) in a step like fashion wi
 Difficulty Level: Easy
 - Given a grid of size 9x9 (All train and test samples had the same size), which contains single cells colored in red (2), blue (1) and the remaining cells colored in black (0), fill the cells one-step diagonal to the red cells with yellow (4) and the cells one-step above and below the blue cell with orange (7).    
     
+## Issues encountered while hand-coding ARC tasks:
+
+1. Generalization:
+    The most common issue that arised while hand coding the solutions was getting a genearlized solution for all train and test cases. The problem was most apparent in tasks where multiple features of a pattern were to be taken into account to match with different use cases. e.g. Task ID 90f3ed37, Task ID 7df24a62
+    
+3. Binary Evaluation:
+   All solutions were deemed incorrect even if the solution was partially correct. While training an AI system with such evaluation criteria, the system might miss learning opportunities, which could have been obtained from the partially correct solutions.
+    
 ## Task file format
 
 The `data` directory contains two subdirectories:
