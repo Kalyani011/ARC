@@ -110,48 +110,84 @@ def solve_90f3ed37(x):
 
 
 def solve_7df24a62(x):
+    """
+    This method solves the task given in 7df24a62.json file.
+    Task Description:
+    Given a grid of size 23x23 (All train and test samples had the same size),
+    with cells colored in either black (0), blue (1) or yellow (4) colors,
+    identify the pattern created by the yellow colored cells across multiple rows,
+    and fill the rows and columns above and below the pattern grid (and it's all possible combinations) 
+    with blue color. The cells in the pattern grid that are not yellow also need to be filled with blue.
+    
+    # Difficulty level: Difficult
+    # RESULT: This method solves all 5 train (4) and test (1) grids successfully
+    """
+    # storing the shape of the input grid
+    x_shape = x.shape
+    
+    # initializing an empty list to store all the different possible combinations of the pattern
     pattern_list = []
+    
+    #fetching the indices of all the blue(1) cells
     row, col = np.where(x == 1)
+    
+    # fetching the minimum and maximum row and column indices of the blue cells 
+    # to create the pattern grid enclosed with blue cells
     min_row = np.min(row)
     min_col = np.min(col)
     max_row = np.max(row)
     max_col = np.max(col)
-    pattern = x[min_row:max_row + 1, min_col:max_col + 1]
-    i, j = np.where(pattern == 4)
-    pat = pattern[np.min(i):np.max(i) + 1, np.min(j):np.max(j) + 1]
-    copy_pat = np.copy(pat)
-    # converting all 1s to 0s in the pattern
-    copy_pat[copy_pat == 1] = 0
-    pattern_shape = pat.shape
-    pattern_list.append(copy_pat)
-    pattern_list.append(np.transpose(copy_pat))
-    pattern_list.append(np.flip(copy_pat))
-    pattern_list.append(np.flip(copy_pat).T)
-    pattern_list.append(np.fliplr(copy_pat))
-    pattern_list.append(np.fliplr(copy_pat).T)
-    pattern_list.append(np.flipud(copy_pat))
-    pattern_list.append(np.flipud(copy_pat).T)
-
+    enclosed_pattern = x[min_row:max_row + 1, min_col:max_col + 1]
+    
+    # creating the actual pattern grid
+    i, j = np.where(enclosed_pattern == 4)
+    pattern = enclosed_pattern[np.min(i):np.max(i) + 1, np.min(j):np.max(j) + 1]
+    
+    # making a copy of the pattern and converting all blues(1) to blacks(0) in the pattern
+    copy_pattern = np.copy(pattern)
+    copy_pattern[copy_pattern == 1] = 0
+    
+    # storing the shape of the pattern
+    pattern_shape = pattern.shape
+    
+    # adding all possible combinations of the pattern to the pattern list
+    pattern_list.append(copy_pattern)
+    pattern_list.append(np.transpose(copy_pattern))
+    pattern_list.append(np.flip(copy_pattern))
+    pattern_list.append(np.flip(copy_pattern).T)
+    pattern_list.append(np.fliplr(copy_pattern))
+    pattern_list.append(np.fliplr(copy_pattern).T)
+    pattern_list.append(np.flipud(copy_pattern))
+    pattern_list.append(np.flipud(copy_pattern).T)
+    
+    # iterating through the input grid to create sub-matrices
+    # of the shape of the pattern and it's transpose
     for row in range(x.shape[0]):
         for col in range(x.shape[1]):
-            subset_0 = x[row:row + pattern_shape[0], col:col + pattern_shape[1]]
-            subset_1 = x[row:row + pattern_shape[1], col:col + pattern_shape[0]]
+            subset_0 = x[row:row + pattern_shape[0], col:col + pattern_shape[1]] # shape as that of pattern
+            subset_1 = x[row:row + pattern_shape[1], col:col + pattern_shape[0]] # shape as that of (pattern)'
+            
+            # iterating through the list of patterns
             for pattern in pattern_list:
+                # checking if the subset is same as that of any of the actual pattern in the pattern list
                 if subset_0.shape == pattern_shape and np.array_equal(subset_0, pattern):
-                    subset_0[subset_0 != 4] = 1
+                    subset_0[subset_0 != 4] = 1 # converting all the black cells into blue in the subset
                     x_start = row - 1
                     y_start = col - 1
                     x_end = row + pattern_shape[0]
                     y_end = col + pattern_shape[1]
+                    
+                    # enclosing the pattern grid with blue cells
                     x[x_start:x_end, y_start] = 1
                     x[x_start:x_end, y_end] = 1
-                    if x_start != 0:
+                    if x_start != 0: # condition added for cases where the yellow cell is present at the initial row(0)
                         x[x_start, y_start:y_end] = 1
                     if y_end != x.shape[0] + 1:
                         y_end += 1
-                    if x_end != len(x):
+                    if x_end != len(x): # condition added for cases where the yellow cell is present at the last column(22)
                         x[x_end, y_start:y_end] = 1
-
+                
+                # checking if the subset is same as that of any of the transpose of the pattern in the pattern list
                 if subset_1.shape[0] == pattern_shape[1] and subset_1.shape[1] == pattern_shape[0] and np.array_equal(
                         subset_1, pattern):
                     subset_1[subset_1 != 4] = 1
@@ -277,6 +313,107 @@ def solve_94f9d214(x):
         x[index[0], index[1]] = red
     return x
 
+def above_index(x):
+    shape = x.shape # storing the shape of the input grid
+    boundary = shape[0] # storing the boundary
+    
+    # finding the position of the cyan(8) cell
+    index = np.argwhere(x==8)
+    
+    # using the indices to iterate throught the cells above it
+    for i,j in index:
+        while (i >= 0) and (j < boundary): # to stop when the row is at 0 or the column has reached the end
+            m = i-1 # setting the value to the row above the cell
+            n = j   # keelping the column same
+            while (m > i-3) and (m >= 0) and (n < boundary): # two steps above
+                x[m][n] = 5 # filling it with grey (5)
+                m = m-1
+            r = i-2 # keeping the row same
+            s = j+1 # setting the value to the column next to the cell
+            while (s < j+3) and (s < boundary) and (r >= 0): # two steps right
+                x[r][s] = 5 # filling it with grey (5)
+                s = s+1
+            j = j + 2
+            i = i-2
+    return x  
+
+def below_index(x):
+    shape = x.shape # storing the shape of the input grid
+    boundary = shape[0] # storing the boundary
+    
+    # finding the position of the cyan(8) cell
+    index = np.argwhere(x==8)
+    
+    # using the indices to iterate throught the cells above it
+    for i,j in index: # to stop when the column is at 0 or the row has reached the end
+        while (j >= 0) and (i < boundary):
+            m = i+1 # setting the value to the row below the cell
+            n = j # keelping the column same
+            while (m < i+3) and (n >= 0) and (m < boundary): # two steps below
+                x[m][n] = 5 # filling it with grey (5)
+                m = m+1
+            r = i+2 # keeping the row same
+            s = j-1 # setting the value to the column next to the cell
+            while (s > j-3) and (r < boundary) and (s >= 0): # two steps left
+                x[r][s] = 5 # filling it with grey (5)
+                s = s-1
+            j = j - 2
+            i = i+2
+    return x        
+
+def solve_d06dbe63(x):
+    """
+    This method solves the task given in d06dbe63.json file.
+    Task Description:
+    Given a grid of size 13x13 (All train and test samples had the same size),
+    which contains one cell colored in cyan (8) and the remaining cells colored in black (0),
+    fill the cells above the cyan cell with color grey (5) in a step like fashion with two steps 
+    and moving towards the right. Similarly, for the cells below the cyan cell, the direction needs to be towards the left
+    
+    # Difficulty level: Medium
+    # RESULT: This method solves all 3 train (2) and test (1) grids successfully
+    """
+    # splitting the functions into two-parts
+    # the above_index function code returns the input grid with the pattern traced in cells above the cyan cell
+    x = above_index(x)
+    
+    # the below_index code returns the input grid with the pattern traced in cells below the cyan cell
+    x = below_index(x)
+    return x
+    
+def solve_0ca9ddb6(x):
+    """
+    This method solves the task given in 0ca9ddb6.json file.
+    Task Description:
+    Given a grid of size 9x9 (All train and test samples had the same size),
+    which contains single cells colored in red (2), blue (1) and the remaining cells colored in black (0),
+    fill the cells one-step diagonal to the red cells with yellow (4) and the cells one-step above 
+    and below the blue cell with orange (7).
+    
+    # Difficulty level: Easy
+    # RESULT: This method solves all 3 train (2) and test (1) grids successfully
+    """
+    
+    # finding the positions of the orange cells
+    red_indices = np.argwhere(x==2)
+    
+    # finding the positions of the orange cells
+    blue_indices = np.argwhere(x==1)
+    
+    # filling the cells with yellow (4) near the red cells
+    for i,j in red_indices:
+        x[i-1][j-1] = 4
+        x[i-1][j+1] = 4
+        x[i+1][j+1] = 4
+        x[i+1][j-1] = 4
+    
+    # filling the cells with orange (7) around the blue cells
+    for i,j in blue_indices:
+        x[i-1][j] = 7
+        x[i+1][j] = 7
+        x[i][j+1] = 7
+        x[i][j-1] = 7
+    return x
 
 def main():
     # Find all the functions defined in this file whose names are
@@ -360,3 +497,7 @@ if __name__ == "__main__": main()
 # 5. https://stackoverflow.com/questions/3525953/check-if-all-values-of-iterable-are-zero accessed on 26/11/21, 22:30
 # 6. https://numpy.org/doc/stable/reference/generated/numpy.copy.html accessed on 27/11/21, 15:35
 # 7. https://numpy.org/doc/stable/reference/generated/numpy.flipud.html accessed on 28/11/21, 10:35
+# 8. https://numpy.org/doc/stable/reference/generated/numpy.array_equal.html accessed on 27/11/21 16:30
+# 9. https://numpy.org/doc/stable/reference/generated/numpy.flip.html accessed on 27/11/21 16:00
+# 10.https://numpy.org/doc/stable/reference/generated/numpy.transpose.html accessed on 27/11/21 16:00
+# 11.https://stackoverflow.com/questions/19161512/numpy-extract-submatrix accessed on 27/11/21 15:00
