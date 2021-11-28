@@ -498,11 +498,15 @@ if __name__ == "__main__": main()
 #           1. Python slicing was used in almost all the hand-coded solutions
 #           2. The NumPy library was used in all the 7 functions
 #               2.1 The most common API of numpy used was numpy.argwhere and numpy.where to find the indices of a particular cell/pattern 
-#               2.2 The other common API of numpy used was numpy.shape to fetch the shape of the input grid to define boundaries or the shape of #                   the sub-matrices
+#               2.2 The other common API of numpy used was numpy.shape to fetch the shape of the input grid to define boundaries or the shape of 
+#                   the sub-matrices
 ###     Differences:
-#           1. The numpy.delete and numpy.concatenate were used only in the function solve_90f3ed37 mainly to match the given incomplete sub-grid #              with the identified pattern
-#           2. The numpy.flip,numpy.flipud,numpy.fliplr were used only in the function solve_7df24a62 to fetch all possible combinations of the     #              pattern identified
-#           3. The numpy.logical_or was used in the function solve_94f9d214 to perform the logical OR operation on two sub-grids to identify the #              cells which had to be colored
+#           1. The numpy.delete and numpy.concatenate were used only in the function solve_90f3ed37 mainly to match the given incomplete sub-grid 
+#              with the identified pattern
+#           2. The numpy.flip,numpy.flipud,numpy.fliplr were used only in the function solve_7df24a62 to fetch all possible combinations of the     
+#              pattern identified
+#           3. The numpy.logical_or was used in the function solve_94f9d214 to perform the logical OR operation on two sub-grids to identify the 
+#              cells which had to be colored
 
 ## Acknowledgements:
 # Following resources were used to perform given tasks:
