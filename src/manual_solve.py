@@ -107,46 +107,67 @@ def solve_90f3ed37(x):
             x[start:end, :][index[0], index[1]] = 1
     return x
 
+
 def solve_7df24a62(x):
-    x_shape = x.shape
-    s=x_shape[0]
     pattern_list = []
-    results_list = []
-    row,col = np.where(x==1)
-    row
+    row, col = np.where(x == 1)
     min_row = np.min(row)
     min_col = np.min(col)
     max_row = np.max(row)
     max_col = np.max(col)
-
-    pattern = x[min_row:max_row+1,min_col:max_col+1]
-
-    i,j = np.where(pattern==4)
-    pat = pattern[np.min(i):np.max(i+1),np.min(j):np.max(j+1)]
+    pattern = x[min_row:max_row + 1, min_col:max_col + 1]
+    i, j = np.where(pattern == 4)
+    pat = pattern[np.min(i):np.max(i) + 1, np.min(j):np.max(j) + 1]
     copy_pat = np.copy(pat)
-    #converting all 1s to 0s in the pattern
+    # converting all 1s to 0s in the pattern
     copy_pat[copy_pat == 1] = 0
     pattern_shape = pat.shape
-    itr = pattern_shape[0]
     pattern_list.append(copy_pat)
     pattern_list.append(np.transpose(copy_pat))
+    pattern_list.append(np.flip(copy_pat))
+    pattern_list.append(np.flip(copy_pat).T)
     pattern_list.append(np.fliplr(copy_pat))
+    pattern_list.append(np.fliplr(copy_pat).T)
     pattern_list.append(np.flipud(copy_pat))
+    pattern_list.append(np.flipud(copy_pat).T)
 
+    for row in range(x.shape[0]):
+        for col in range(x.shape[1]):
+            subset_0 = x[row:row + pattern_shape[0], col:col + pattern_shape[1]]
+            subset_1 = x[row:row + pattern_shape[1], col:col + pattern_shape[0]]
+            for pattern in pattern_list:
+                if subset_0.shape == pattern_shape and np.array_equal(subset_0, pattern):
+                    subset_0[subset_0 != 4] = 1
+                    x_start = row - 1
+                    y_start = col - 1
+                    x_end = row + pattern_shape[0]
+                    y_end = col + pattern_shape[1]
+                    x[x_start:x_end, y_start] = 1
+                    x[x_start:x_end, y_end] = 1
+                    if x_start != 0:
+                        x[x_start, y_start:y_end] = 1
+                    if y_end != x.shape[0] + 1:
+                        y_end += 1
+                    if x_end != len(x):
+                        x[x_end, y_start:y_end] = 1
 
-    for i in range(s-itr+1):
-        for j in range(s-itr+1):
-            sub = x[i:i+itr,j:j+itr]
-            for p in pattern_list:
-                if sub.shape == pattern_shape and np.array_equal(sub,p):
-                    sub[sub!=4]=1
-                    print(sub)
-                    print(i,j)
-                    x[i-1:i+itr+1,j-1] = 1
-                    x[i-1,j:j+itr+1] = 1
-                    if i+itr != s:
-                        x[i+itr,j:j+itr+1] = 1
-                    x[i-1:i+itr+1,j+itr] = 1
+                if subset_1.shape[0] == pattern_shape[1] and subset_1.shape[1] == pattern_shape[0] and np.array_equal(
+                        subset_1, pattern):
+                    subset_1[subset_1 != 4] = 1
+                    x_start = row - 1
+                    y_start = col - 1
+                    x_end = row + pattern_shape[1]
+                    y_end = col + pattern_shape[0]
+                    if x_start == -1:
+                        x_start += 1
+                    x[x_start:x_end, y_start] = 1
+                    x[x_start:x_end, y_end] = 1
+                    if x_start != 0:
+                        x[x_start, y_start:y_end] = 1
+                    if y_end != x.shape[0] + 1:
+                        y_end += 1
+                    if x_end != len(x):
+                        x[x_end, y_start:y_end] = 1
     return x
 
 
