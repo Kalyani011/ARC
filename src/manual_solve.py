@@ -313,6 +313,107 @@ def solve_94f9d214(x):
         x[index[0], index[1]] = red
     return x
 
+def above_index(x):
+    shape = x.shape # storing the shape of the input grid
+    boundary = shape[0] # storing the boundary
+    
+    # finding the position of the cyan(8) cell
+    index = np.argwhere(x==8)
+    
+    # using the indices to iterate throught the cells above it
+    for i,j in index:
+        while (i >= 0) and (j < boundary): # to stop when the row is at 0 or the column has reached the end
+            m = i-1 # setting the value to the row above the cell
+            n = j   # keelping the column same
+            while (m > i-3) and (m >= 0) and (n < boundary): # two steps above
+                x[m][n] = 5 # filling it with grey (5)
+                m = m-1
+            r = i-2 # keeping the row same
+            s = j+1 # setting the value to the column next to the cell
+            while (s < j+3) and (s < boundary) and (r >= 0): # two steps right
+                x[r][s] = 5 # filling it with grey (5)
+                s = s+1
+            j = j + 2
+            i = i-2
+    return x  
+
+def below_index(x):
+    shape = x.shape # storing the shape of the input grid
+    boundary = shape[0] # storing the boundary
+    
+    # finding the position of the cyan(8) cell
+    index = np.argwhere(x==8)
+    
+    # using the indices to iterate throught the cells above it
+    for i,j in index: # to stop when the column is at 0 or the row has reached the end
+        while (j >= 0) and (i < boundary):
+            m = i+1 # setting the value to the row below the cell
+            n = j # keelping the column same
+            while (m < i+3) and (n >= 0) and (m < boundary): # two steps below
+                x[m][n] = 5 # filling it with grey (5)
+                m = m+1
+            r = i+2 # keeping the row same
+            s = j-1 # setting the value to the column next to the cell
+            while (s > j-3) and (r < boundary) and (s >= 0): # two steps left
+                x[r][s] = 5 # filling it with grey (5)
+                s = s-1
+            j = j - 2
+            i = i+2
+    return x        
+
+def solve_d06dbe63(x):
+    """
+    This method solves the task given in d06dbe63.json file.
+    Task Description:
+    Given a grid of size 13x13 (All train and test samples had the same size),
+    which contains one cell colored in cyan (8) and the remaining cells colored in black (0),
+    fill the cells above the cyan cell with color grey (5) in a step like fashion with two steps 
+    and moving towards the right. Similarly, for the cells below the cyan cell, the direction needs to be towards the left
+    
+    # Difficulty level: Medium
+    # RESULT: This method solves all 3 train (2) and test (1) grids successfully
+    """
+    # splitting the functions into two-parts
+    # the above_index function code returns the input grid with the pattern traced in cells above the cyan cell
+    x = above_index(x)
+    
+    # the below_index code returns the input grid with the pattern traced in cells below the cyan cell
+    x = below_index(x)
+    return x
+    
+def solve_0ca9ddb6(x):
+    """
+    This method solves the task given in 0ca9ddb6.json file.
+    Task Description:
+    Given a grid of size 9x9 (All train and test samples had the same size),
+    which contains single cells colored in red (2), blue (1) and the remaining cells colored in black (0),
+    fill the cells one-step diagonal to the red cells with yellow (4) and the cells one-step above 
+    and below the blue cell with orange (7).
+    
+    # Difficulty level: Easy
+    # RESULT: This method solves all 3 train (2) and test (1) grids successfully
+    """
+    
+    # finding the positions of the orange cells
+    red_indices = np.argwhere(x==2)
+    
+    # finding the positions of the orange cells
+    blue_indices = np.argwhere(x==1)
+    
+    # filling the cells with yellow (4) near the red cells
+    for i,j in red_indices:
+        x[i-1][j-1] = 4
+        x[i-1][j+1] = 4
+        x[i+1][j+1] = 4
+        x[i+1][j-1] = 4
+    
+    # filling the cells with orange (7) around the blue cells
+    for i,j in blue_indices:
+        x[i-1][j] = 7
+        x[i+1][j] = 7
+        x[i][j+1] = 7
+        x[i][j-1] = 7
+    return x
 
 def main():
     # Find all the functions defined in this file whose names are
@@ -396,3 +497,7 @@ if __name__ == "__main__": main()
 # 5. https://stackoverflow.com/questions/3525953/check-if-all-values-of-iterable-are-zero accessed on 26/11/21, 22:30
 # 6. https://numpy.org/doc/stable/reference/generated/numpy.copy.html accessed on 27/11/21, 15:35
 # 7. https://numpy.org/doc/stable/reference/generated/numpy.flipud.html accessed on 28/11/21, 10:35
+# 8. https://numpy.org/doc/stable/reference/generated/numpy.array_equal.html accessed on 27/11/21 16:30
+# 9. https://numpy.org/doc/stable/reference/generated/numpy.flip.html accessed on 27/11/21 16:00
+# 10.https://numpy.org/doc/stable/reference/generated/numpy.transpose.html accessed on 27/11/21 16:00
+# 11.https://stackoverflow.com/questions/19161512/numpy-extract-submatrix accessed on 27/11/21 15:00
